@@ -22,6 +22,7 @@ import br.com.wt.poclaboratorio.modelo.BolsaDeSangueRepository;
 @RestController
 @RequestMapping("/bolsa")
 public class BolsaDeSangueController {
+	
 	@Autowired
 	private BolsaDeSangueRepository bolsaDeSangueRepository;
 	

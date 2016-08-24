@@ -1,5 +1,6 @@
 package br.com.wt.poclaboratorio.modelo;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -13,11 +14,11 @@ public class BolsaDeSangue {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@OneToOne(mappedBy = "id_doador")
+	@OneToOne(cascade=CascadeType.ALL)
 	private Doador doador;
 	@Enumerated(EnumType.STRING)
 	private TipoSanguineo tipoSanguine;
-	@OneToOne(mappedBy = "id_laboratorio")
+	@OneToOne(cascade=CascadeType.ALL)
 	private Laboratorio laboratorio;
 
 	public Long getId() {

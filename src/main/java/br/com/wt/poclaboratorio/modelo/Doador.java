@@ -1,10 +1,13 @@
+
 package br.com.wt.poclaboratorio.modelo;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Entity
 public class Doador {
+	@Id
 	private Long id;
 	@Column
 	private String nome;
