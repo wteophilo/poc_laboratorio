@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.wt.poclaboratorio.modelo.Laboratorio;
-import br.com.wt.poclaboratorio.modelo.LaboratorioRepository;
+import br.com.wt.poclaboratorio.repository.LaboratorioRepository;
 
 @RestController
 @RequestMapping("/laboratorio")
@@ -25,13 +25,13 @@ public class LaboratorioController {
 	@Autowired
 	private LaboratorioRepository laboratorioRepository;
 
-	@RequestMapping(value = "/", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/", method = RequestMethod.POST, produces = "application/json", headers="Accept=application/json")
 	public ResponseEntity<Void> add(@RequestBody Laboratorio laboratorio, UriComponentsBuilder ucBuilder) {
 		HttpHeaders headers = new HttpHeaders();
 		try {
 			laboratorioRepository.save(laboratorio);
 			headers.setLocation(ucBuilder.path("/{id}").buildAndExpand(laboratorio.getId()).toUri());
-			return new ResponseEntity<Void>(headers, HttpStatus.OK);
+			return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
 		} catch (RuntimeErrorException e) {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<Void>(headers, HttpStatus.NOT_ACCEPTABLE);
@@ -41,11 +41,12 @@ public class LaboratorioController {
 
 	@RequestMapping(value = "/lista", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<List<Laboratorio>> lista() {
+		
 		List<Laboratorio> laboratorios = (List<Laboratorio>) laboratorioRepository.findAll();
 		if (laboratorios == null) {
 			return new ResponseEntity<>(laboratorios, HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(laboratorios, HttpStatus.FOUND);
+		return new ResponseEntity<>(laboratorios, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -54,7 +55,7 @@ public class LaboratorioController {
 		if (laboratorio == null) {
 			return new ResponseEntity<>(laboratorio, HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(laboratorio, HttpStatus.FOUND);
+		return new ResponseEntity<>(laboratorio, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json")

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.wt.poclaboratorio.modelo.BolsaDeSangue;
-import br.com.wt.poclaboratorio.modelo.BolsaDeSangueRepository;
+import br.com.wt.poclaboratorio.repository.BolsaDeSangueRepository;
 
 
 @RestController

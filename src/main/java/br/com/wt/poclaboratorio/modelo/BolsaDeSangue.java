@@ -7,6 +7,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -18,8 +20,18 @@ public class BolsaDeSangue {
 	private Doador doador;
 	@Enumerated(EnumType.STRING)
 	private TipoSanguineo tipoSanguine;
-	@OneToOne(cascade=CascadeType.ALL)
+	@ManyToOne
+	@JoinColumn(name = "laboratorio_id")
 	private Laboratorio laboratorio;
+	
+	public BolsaDeSangue() {}
+
+	public BolsaDeSangue(Doador doador, TipoSanguineo tipoSanguine, Laboratorio laboratorio) {
+		super();
+		this.doador = doador;
+		this.tipoSanguine = tipoSanguine;
+		this.laboratorio = laboratorio;
+	}
 
 	public Long getId() {
 		return id;
