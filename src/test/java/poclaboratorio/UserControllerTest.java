@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,29 +29,34 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
 import br.com.wt.poclaboratorio.Boot;
+import br.com.wt.poclaboratorio.config.Cripto;
 import br.com.wt.poclaboratorio.modelo.Laboratorio;
-import br.com.wt.poclaboratorio.repository.LaboratorioRepository;
+import br.com.wt.poclaboratorio.modelo.User;
+import br.com.wt.poclaboratorio.repository.UserRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Boot.class)
 @WebAppConfiguration
-@IntegrationTest({"server.port=8081"})
-public class LaboratorioControllerTest {
-
+@IntegrationTest({ "server.port=8081" })
+public class UserControllerTest {
 	private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
 			MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
+
 	private MockMvc mockMvc;
 	@SuppressWarnings("rawtypes")
 	private HttpMessageConverter mappingJackson2HttpMessageConverter;
-	private List<Laboratorio> laboratorios = new ArrayList<Laboratorio>();
-	
 	@Autowired
-	private LaboratorioRepository laboratorioRepository;
+	private UserRepository userRepository;
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 
+	private User user;
+	private List<User> users;
+	private Cripto cripto;
+	private Laboratorio lab;
+
 	@Autowired
-	void setConverters(HttpMessageConverter<?>[] converters) {
+	public void setConverters(HttpMessageConverter<?>[] converters) {
 
 		this.mappingJackson2HttpMessageConverter = Arrays.asList(converters).stream()
 				.filter(hmc -> hmc instanceof MappingJackson2HttpMessageConverter).findAny().get();
@@ -63,26 +67,34 @@ public class LaboratorioControllerTest {
 	@Before
 	public void setUp() throws Exception {
 		this.mockMvc = webAppContextSetup(webApplicationContext).build();
-		this.laboratorios = laboratorioRepository.findAll();
-		if (this.laboratorios == null){
-			this.laboratorios.add(
-					laboratorioRepository.save(new Laboratorio("Laboratorio_1", "Rua A", "00001-11", "lab1@lab1.com.br",null)));
-			this.laboratorios.add(
-					laboratorioRepository.save(new Laboratorio("Laboratorio_2", "Rua B", "00002-22", "lab2@lab2.com.br",null)));
+		this.users = userRepository.findAll();
+		this.lab = new Laboratorio();
+		this.lab.setId(new Long(34));
+		this.cripto = new Cripto();
+		if (this.users == null) {
+
+			this.users.add(userRepository.save(new User("Lucas", cripto.encrypt("123"), lab)));
+			this.users.add(userRepository.save(new User("Ana Julia", cripto.encrypt("321"), lab)));
 		}
-	}
-	
-	
-	@Test
-	public void listaLaboratorios() throws Exception {
-		mockMvc.perform(get("/laboratorio/"+this.laboratorios.get(0).getId())).andExpect(status().isOk())
-				.andExpect(jsonPath("$.id", is(this.laboratorios.get(0).getId().intValue())));
 	}
 
 	@Test
-	public void adicionarLaboratorio() throws Exception {
-		String laboratorioJson = json(new Laboratorio("Laboratorio_3", "Rua C", "00003-3", "lab2@lab3.com.br",null));
-		this.mockMvc.perform(post("/laboratorio/").contentType(contentType).content(laboratorioJson)).andExpect(status().isOk());
+	public void listaUsuarios() throws Exception {
+		mockMvc.perform(get("/user/" + this.users.get(0).getId())).andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(this.users.get(0).getId().intValue())));
+	}
+
+	@Test
+	public void findUser() throws Exception {
+		mockMvc.perform(get("/user/" + this.users.get(0).getUsername(), this.users.get(0).getPassword()))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.username", is(this.users.get(0).getUsername())));
+	}
+
+	@Test
+	public void adicionarUser() throws Exception {
+		String UserJson = json(new User("João", cripto.encrypt("123"), lab));
+		this.mockMvc.perform(post("/" + this.lab.getId() + "/user/").contentType(contentType).content(UserJson))
+				.andExpect(status().isCreated());
 	}
 
 	protected String json(Object o) throws IOException {
@@ -90,5 +102,4 @@ public class LaboratorioControllerTest {
 		this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
 		return mockHttpOutputMessage.getBodyAsString();
 	}
-
 }

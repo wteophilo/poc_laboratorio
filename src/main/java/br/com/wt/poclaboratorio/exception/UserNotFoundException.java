@@ -4,11 +4,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class LaboratorioNotFound extends RuntimeException {
-	
+class UserNotFoundException extends RuntimeException {
+
 	private static final long serialVersionUID = 1L;
 
-	public LaboratorioNotFound(Long laboratorioId) {
-		super("Não foi possível localizar o Laboratório:  "+laboratorioId);
-	}	
+	public UserNotFoundException(String userId) {
+		super("Não foi possível localizar o usuário'" + userId + "'.");
+	}
 }
