@@ -2,9 +2,8 @@
 ==========================
 
 Tecnologias:
-===========
 
-Spring boot
-Rest
-JPA
-Mysql
+* Spring boot
+* Rest
+* JPA
+* Mysql/Postgree
