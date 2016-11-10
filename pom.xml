@@ -68,10 +68,6 @@
 			<artifactId>spring-boot-starter</artifactId>
 			<scope>compile</scope>
 		</dependency>
-		 <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -142,9 +138,6 @@
 	</pluginRepositories>
 	<build>
 		<plugins>
-			<configuration>
-				<skipTests>true</skipTests>
-			</configuration>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.4</version>

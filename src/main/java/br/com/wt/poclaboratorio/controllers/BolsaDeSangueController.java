@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,22 +17,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.wt.poclaboratorio.modelo.BolsaDeSangue;
 import br.com.wt.poclaboratorio.repository.BolsaDeSangueRepository;
-import br.com.wt.poclaboratorio.repository.UserRepository;
 
 
 @RestController
-@RequestMapping("{userId}/bolsa")
+@RequestMapping("/bolsa")
 public class BolsaDeSangueController {
 	
 	@Autowired
 	private BolsaDeSangueRepository bolsaDeSangueRepository;
-	@Autowired
-	private UserRepository userRepository;
-	
-
 	@RequestMapping(value = "/", method = RequestMethod.POST, produces = "application/json")
 	public ResponseEntity<Void> add(@PathVariable String userId,@RequestBody BolsaDeSangue bolsaDeSangue, UriComponentsBuilder ucBuilder) {
-		this.validateUser(userId);
 		HttpHeaders headers = new HttpHeaders();
 		try {
 			bolsaDeSangueRepository.save(bolsaDeSangue);
@@ -95,8 +88,4 @@ public class BolsaDeSangueController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
-	private void validateUser(String userId) {
-		this.userRepository.findByUsername(userId).orElseThrow(
-				() -> new UsernameNotFoundException(userId));
-	}
 }

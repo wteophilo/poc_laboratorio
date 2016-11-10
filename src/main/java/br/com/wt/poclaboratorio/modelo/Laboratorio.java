@@ -21,9 +21,7 @@ public class Laboratorio {
 	private String email;
 	@OneToMany(mappedBy = "laboratorio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<BolsaDeSangue> bolsasDeSangue;
-	@OneToMany(mappedBy = "laboratorio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<User> user;
-
+	
 	public Laboratorio() {
 	}
 	
@@ -41,7 +39,7 @@ public class Laboratorio {
 
 
 	public Laboratorio(Long id, String nome, String endereco, String cep, String email,
-			List<BolsaDeSangue> bolsasDeSangue, List<User> user) {
+			List<BolsaDeSangue> bolsasDeSangue) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -49,7 +47,7 @@ public class Laboratorio {
 		this.cep = cep;
 		this.email = email;
 		this.bolsasDeSangue = bolsasDeSangue;
-		this.user = user;
+	
 	}
 
 	public Long getId() {
@@ -100,18 +98,11 @@ public class Laboratorio {
 		this.bolsasDeSangue = bolsasDeSangue;
 	}
 
-	public List<User> getUser() {
-		return user;
-	}
-
-	public void setUser(List<User> user) {
-		this.user = user;
-	}
-
+	
 	@Override
 	public String toString() {
 		return "Laboratorio [id=" + id + ", nome=" + nome + ", endereco=" + endereco + ", cep=" + cep + ", email="
-				+ email + ", bolsasDeSangue=" + bolsasDeSangue + ", user=" + user + "]";
+				+ email + ", bolsasDeSangue=" + bolsasDeSangue + "]";
 	}
 
 }
