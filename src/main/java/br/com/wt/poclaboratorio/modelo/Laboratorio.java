@@ -19,26 +19,26 @@ public class Laboratorio {
 	private String endereco;
 	private String cep;
 	private String email;
+	private String cnpj;
 	@OneToMany(mappedBy = "laboratorio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<BolsaDeSangue> bolsasDeSangue;
 	
 	public Laboratorio() {
 	}
 	
-	
-
-	public Laboratorio(String nome, String endereco, String cep, String email, List<BolsaDeSangue> bolsasDeSangue) {
+	public Laboratorio(String nome, String endereco, String cep, String email, String cnpj,List<BolsaDeSangue> bolsasDeSangue) {
 		super();
 		this.nome = nome;
 		this.endereco = endereco;
 		this.cep = cep;
 		this.email = email;
+		this.cnpj = cnpj;
 		this.bolsasDeSangue = bolsasDeSangue;
 	}
 
 
 
-	public Laboratorio(Long id, String nome, String endereco, String cep, String email,
+	public Laboratorio(Long id, String nome, String endereco, String cep, String email,String cnpj,
 			List<BolsaDeSangue> bolsasDeSangue) {
 		super();
 		this.id = id;
@@ -46,8 +46,8 @@ public class Laboratorio {
 		this.endereco = endereco;
 		this.cep = cep;
 		this.email = email;
+		this.cnpj = cnpj;
 		this.bolsasDeSangue = bolsasDeSangue;
-	
 	}
 
 	public Long getId() {
@@ -89,6 +89,14 @@ public class Laboratorio {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+	public String getCnpj() {
+		return cnpj;
+	}
+
+	public void setCnpj(String cnpj) {
+		this.cnpj = cnpj;
+	}
 
 	public List<BolsaDeSangue> getBolsasDeSangue() {
 		return bolsasDeSangue;
@@ -98,11 +106,10 @@ public class Laboratorio {
 		this.bolsasDeSangue = bolsasDeSangue;
 	}
 
-	
 	@Override
 	public String toString() {
 		return "Laboratorio [id=" + id + ", nome=" + nome + ", endereco=" + endereco + ", cep=" + cep + ", email="
-				+ email + ", bolsasDeSangue=" + bolsasDeSangue + "]";
+				+ email + ", cnpj=" + cnpj + ", bolsasDeSangue=" + bolsasDeSangue + "]";
 	}
 
 }

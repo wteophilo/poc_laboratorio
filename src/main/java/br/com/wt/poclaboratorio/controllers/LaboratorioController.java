@@ -28,6 +28,7 @@ public class LaboratorioController {
 	@RequestMapping(value = "/", method = RequestMethod.POST, produces = "application/json", headers="Accept=application/json")
 	public ResponseEntity<Void> add(@RequestBody Laboratorio laboratorio, UriComponentsBuilder ucBuilder) {
 		HttpHeaders headers = new HttpHeaders();
+		laboratorio = naoExiste(laboratorio); 
 		try {
 			laboratorioRepository.save(laboratorio);
 			headers.setLocation(ucBuilder.path("/{id}").buildAndExpand(laboratorio.getId()).toUri());
@@ -72,7 +73,8 @@ public class LaboratorioController {
 		laboratorioBD.setEmail(laboratorio.getEmail());
 		laboratorioBD.setEndereco(laboratorio.getEndereco());
 		laboratorioBD.setNome(laboratorio.getNome());
-
+		laboratorioBD.setCnpj(laboratorio.getCnpj());
+		
 		laboratorioRepository.save(laboratorioBD);
 		headers.setLocation(ucBuilder.path("/{id}").buildAndExpand(laboratorio.getId()).toUri());
 		return new ResponseEntity<Void>(headers, HttpStatus.OK);
@@ -88,6 +90,15 @@ public class LaboratorioController {
 		
 		laboratorioRepository.delete(laboratorio);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+	
+	private Laboratorio naoExiste(Laboratorio lab){
+		Laboratorio dbLaboratorio = laboratorioRepository.findBycnpj(lab.getCnpj());
+		if (dbLaboratorio == null){
+			return lab;
+		}else{
+			return dbLaboratorio;
+		}	
 	}
 
 }

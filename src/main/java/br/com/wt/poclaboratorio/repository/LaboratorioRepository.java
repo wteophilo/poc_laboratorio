@@ -10,4 +10,5 @@ import br.com.wt.poclaboratorio.modelo.Laboratorio;
 @RepositoryRestResource
 public interface LaboratorioRepository extends JpaRepository<Laboratorio,Long>{
 	 Laboratorio findByid(Long id);
+	 Laboratorio findBycnpj(String cnpj);
 }
