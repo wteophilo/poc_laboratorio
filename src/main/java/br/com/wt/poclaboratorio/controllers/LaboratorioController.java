@@ -50,8 +50,9 @@ public class LaboratorioController {
 		return new ResponseEntity<>(laboratorios, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/buscaPorID/{id}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<Laboratorio> getLaboratorio(@PathVariable Long id) {
+		
 		Laboratorio laboratorio = laboratorioRepository.findOne(id);
 		if (laboratorio == null) {
 			return new ResponseEntity<>(laboratorio, HttpStatus.NOT_FOUND);
@@ -59,7 +60,7 @@ public class LaboratorioController {
 		return new ResponseEntity<>(laboratorio, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json")
+	@RequestMapping(value = "/atualizaPorID/{id}", method = RequestMethod.PUT, produces = "application/json")
 	public ResponseEntity<Void> update(@PathVariable long id, @RequestBody Laboratorio laboratorio,
 			UriComponentsBuilder ucBuilder) {
 		HttpHeaders headers = new HttpHeaders();
@@ -81,7 +82,7 @@ public class LaboratorioController {
 
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
+	@RequestMapping(value = "/deletaPorId/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	public ResponseEntity<Void> deletar(@PathVariable Long id) {
 		Laboratorio laboratorio = laboratorioRepository.findOne(id);
 		if (laboratorio == null) {

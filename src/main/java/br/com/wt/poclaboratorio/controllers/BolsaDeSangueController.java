@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.wt.poclaboratorio.modelo.BolsaDeSangue;
+import br.com.wt.poclaboratorio.modelo.Doador;
+import br.com.wt.poclaboratorio.modelo.Laboratorio;
 import br.com.wt.poclaboratorio.repository.BolsaDeSangueRepository;
 
 
@@ -26,11 +28,11 @@ public class BolsaDeSangueController {
 	@Autowired
 	private BolsaDeSangueRepository bolsaDeSangueRepository;
 	@RequestMapping(value = "/", method = RequestMethod.POST, produces = "application/json")
-	public ResponseEntity<Void> add(@PathVariable String userId,@RequestBody BolsaDeSangue bolsaDeSangue, UriComponentsBuilder ucBuilder) {
+	public ResponseEntity<Void> add(@RequestBody BolsaDeSangue bolsa, UriComponentsBuilder ucBuilder) {
 		HttpHeaders headers = new HttpHeaders();
 		try {
-			bolsaDeSangueRepository.save(bolsaDeSangue);
-			headers.setLocation(ucBuilder.path("/{id}").buildAndExpand(bolsaDeSangue.getId()).toUri());
+			bolsaDeSangueRepository.save(bolsa);
+			headers.setLocation(ucBuilder.path("/{id}").buildAndExpand(bolsa.getId()).toUri());
 			return new ResponseEntity<Void>(headers, HttpStatus.OK);
 		} catch (RuntimeErrorException e) {
 			System.out.println(e.getMessage());
@@ -45,10 +47,42 @@ public class BolsaDeSangueController {
 		if (bolsaDeSangues == null) {
 			return new ResponseEntity<>(bolsaDeSangues, HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(bolsaDeSangues, HttpStatus.FOUND);
+		return new ResponseEntity<>(bolsaDeSangues, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
+	
+	@RequestMapping(value="/listaTiposSanguineo",method=RequestMethod.GET,produces = "application/json")
+	public ResponseEntity<List<BolsaDeSangue>> listaPorTipoSanguineo(@PathVariable String tipoSanguineo) {
+		List<BolsaDeSangue>bolsaDeSangues =(List<BolsaDeSangue>) bolsaDeSangueRepository.findBytipoSanguineo(tipoSanguineo);
+		if (bolsaDeSangues == null) {
+			return new ResponseEntity<>(bolsaDeSangues, HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(bolsaDeSangues, HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping(value="/listaBolsasPorLaboratorio",method=RequestMethod.GET,produces = "application/json")
+	public ResponseEntity<List<BolsaDeSangue>> listaPorTipoSanguineo(@RequestBody Laboratorio laboratorio) {
+		List<BolsaDeSangue>bolsaDeSangues =(List<BolsaDeSangue>) bolsaDeSangueRepository.findBylaboratorio(laboratorio);
+		if (bolsaDeSangues == null) {
+			return new ResponseEntity<>(bolsaDeSangues, HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(bolsaDeSangues, HttpStatus.OK);
+	}
+	
+	
+	
+	@RequestMapping(value="/buscaBolsaPorDoador",method=RequestMethod.GET,produces = "application/json")
+	public ResponseEntity<BolsaDeSangue> buscaBolsaPorDoador(@RequestBody Doador doador) {
+		BolsaDeSangue bolsa = bolsaDeSangueRepository.findBydoador(doador);
+		if (bolsa == null) {
+			return new ResponseEntity<BolsaDeSangue>(bolsa, HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<BolsaDeSangue>(bolsa, HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping(value = "/buscaPorId/{id}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<BolsaDeSangue> getBolsaDeSangue(@PathVariable Long id) {
 		BolsaDeSangue bolsaDeSangue = bolsaDeSangueRepository.findOne(id);
 		if (bolsaDeSangue == null) {
@@ -57,7 +91,7 @@ public class BolsaDeSangueController {
 		return new ResponseEntity<>(bolsaDeSangue, HttpStatus.FOUND);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json")
+	@RequestMapping(value = "/atualizaPorId/{id}", method = RequestMethod.PUT, produces = "application/json")
 	public ResponseEntity<Void> update(@PathVariable long id, @RequestBody BolsaDeSangue bolsaDeSangue,
 			UriComponentsBuilder ucBuilder) {
 		HttpHeaders headers = new HttpHeaders();
@@ -69,7 +103,7 @@ public class BolsaDeSangueController {
 
 		bolsaDeSangueBD.setDoador(bolsaDeSangue.getDoador());
 		bolsaDeSangueBD.setLaboratorio(bolsaDeSangue.getLaboratorio());
-		bolsaDeSangueBD.setTipoSanguine(bolsaDeSangue.getTipoSanguine());
+		bolsaDeSangueBD.setTipoSanguineo(bolsaDeSangue.getTipoSanguineo());
 
 		bolsaDeSangueRepository.save(bolsaDeSangueBD);
 		headers.setLocation(ucBuilder.path("/{id}").buildAndExpand(bolsaDeSangue.getId()).toUri());
@@ -77,7 +111,7 @@ public class BolsaDeSangueController {
 
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
+	@RequestMapping(value = "/deletaPorId/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	public ResponseEntity<Void> deletar(@PathVariable Long id) {
 		BolsaDeSangue bolsaDeSangue = bolsaDeSangueRepository.findOne(id);
 		if (bolsaDeSangue == null) {

@@ -20,8 +20,10 @@ public class Laboratorio {
 	private String cep;
 	private String email;
 	private String cnpj;
-	@OneToMany(mappedBy = "laboratorio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "laboratorio", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	private List<BolsaDeSangue> bolsasDeSangue;
+	@OneToMany(mappedBy = "laboratorio", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	private List<User> users;
 	
 	public Laboratorio() {
 	}

@@ -2,8 +2,6 @@ package br.com.wt.poclaboratorio.modelo;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,22 +14,32 @@ public class BolsaDeSangue {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(cascade=CascadeType.REFRESH)
 	private Doador doador;
-	@Enumerated(EnumType.STRING)
-	private TipoSanguineo tipoSanguine;
-	@ManyToOne
+	private String tipoSanguineo;
+	private String observacao;
+	private String numRastreamento;
+	@ManyToOne(cascade=CascadeType.REFRESH)
 	@JoinColumn(name = "laboratorio_id")
 	private Laboratorio laboratorio;
+
 	
 	public BolsaDeSangue() {}
 
-	public BolsaDeSangue(Doador doador, TipoSanguineo tipoSanguine, Laboratorio laboratorio) {
+	
+
+	public BolsaDeSangue(Long id, Doador doador, String tipoSanguineo, String observacao, String numRastreamento,
+			Laboratorio laboratorio) {
 		super();
+		this.id = id;
 		this.doador = doador;
-		this.tipoSanguine = tipoSanguine;
+		this.tipoSanguineo = tipoSanguineo;
+		this.observacao = observacao;
+		this.numRastreamento = numRastreamento;
 		this.laboratorio = laboratorio;
 	}
+
+
 
 	public Long getId() {
 		return id;
@@ -49,12 +57,12 @@ public class BolsaDeSangue {
 		this.doador = doador;
 	}
 
-	public TipoSanguineo getTipoSanguine() {
-		return tipoSanguine;
+	public String getTipoSanguineo() {
+		return tipoSanguineo;
 	}
 
-	public void setTipoSanguine(TipoSanguineo tipoSanguine) {
-		this.tipoSanguine = tipoSanguine;
+	public void setTipoSanguineo(String tipoSanguineo) {
+		this.tipoSanguineo = tipoSanguineo;
 	}
 
 	public Laboratorio getLaboratorio() {
@@ -64,11 +72,32 @@ public class BolsaDeSangue {
 	public void setLaboratorio(Laboratorio laboratorio) {
 		this.laboratorio = laboratorio;
 	}
+	
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
+	}
+	
+	
+
+	public String getNumRastreamento() {
+		return numRastreamento;
+	}
+
+
+
+	public void setNumRastreamento(String numRastreamento) {
+		this.numRastreamento = numRastreamento;
+	}
+
 
 	@Override
 	public String toString() {
-		return "BolsaDeSangue [id=" + id + ", doador=" + doador + ", tipoSanguine=" + tipoSanguine + ", laboratorio="
-				+ laboratorio + "]";
+		return "BolsaDeSangue [id=" + id + ", doador=" + doador + ", tipoSanguineo=" + tipoSanguineo + ", observacao="
+				+ observacao + ", numRastreamento=" + numRastreamento + ", laboratorio=" + laboratorio + "]";
 	}
 
 }
