@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.wt.poclaboratorio.config.Cripto;
 import br.com.wt.poclaboratorio.modelo.Laboratorio;
 import br.com.wt.poclaboratorio.repository.LaboratorioRepository;
 
@@ -22,22 +23,35 @@ import br.com.wt.poclaboratorio.repository.LaboratorioRepository;
 @RequestMapping("/laboratorio")
 public class LaboratorioController {
 
+	private Cripto cripto = new Cripto();
+
 	@Autowired
 	private LaboratorioRepository laboratorioRepository;
 
 	@RequestMapping(value = "/", method = RequestMethod.POST, produces = "application/json", headers="Accept=application/json")
 	public ResponseEntity<Void> add(@RequestBody Laboratorio laboratorio, UriComponentsBuilder ucBuilder) {
 		HttpHeaders headers = new HttpHeaders();
+	
+		laboratorio.setSenha(this.cripto.encrypt(laboratorio.getSenha()));
 		laboratorio = naoExiste(laboratorio); 
 		try {
 			laboratorioRepository.save(laboratorio);
 			headers.setLocation(ucBuilder.path("/{id}").buildAndExpand(laboratorio.getId()).toUri());
-			return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+			return new ResponseEntity<Void>(headers, HttpStatus.OK);
 		} catch (RuntimeErrorException e) {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<Void>(headers, HttpStatus.NOT_ACCEPTABLE);
 		}
 
+	}
+	
+	@RequestMapping(value = "/login/", method = RequestMethod.POST, produces = "application/json", headers="Accept=application/json")
+	public ResponseEntity<Laboratorio> login(@RequestBody Laboratorio laboratorio){
+		Laboratorio lab = laboratorioRepository.findByemailAndsenha(laboratorio.getEmail(), this.cripto.encrypt(laboratorio.getSenha()));
+		if (lab ==null){
+			return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+		}
+		return new ResponseEntity<Laboratorio>(lab, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/lista", method = RequestMethod.GET, produces = "application/json")

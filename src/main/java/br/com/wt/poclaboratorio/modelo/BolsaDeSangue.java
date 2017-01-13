@@ -2,6 +2,7 @@ package br.com.wt.poclaboratorio.modelo;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -9,18 +10,22 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 public class BolsaDeSangue {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@OneToOne(cascade=CascadeType.REFRESH)
+	@OneToOne(cascade ={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, fetch = FetchType.EAGER)
 	private Doador doador;
 	private String tipoSanguineo;
 	private String observacao;
 	private String numRastreamento;
-	@ManyToOne(cascade=CascadeType.REFRESH)
+	private String dataColeta;
+	@ManyToOne(cascade ={CascadeType.MERGE, CascadeType.REFRESH})
 	@JoinColumn(name = "laboratorio_id")
+	@JsonBackReference
 	private Laboratorio laboratorio;
 
 	
@@ -92,12 +97,24 @@ public class BolsaDeSangue {
 	public void setNumRastreamento(String numRastreamento) {
 		this.numRastreamento = numRastreamento;
 	}
+	
+
+	public String getDataColeta() {
+		return dataColeta;
+	}
+
+
+
+	public void setDataColeta(String dataColeta) {
+		this.dataColeta = dataColeta;
+	}
+
 
 
 	@Override
 	public String toString() {
 		return "BolsaDeSangue [id=" + id + ", doador=" + doador + ", tipoSanguineo=" + tipoSanguineo + ", observacao="
-				+ observacao + ", numRastreamento=" + numRastreamento + ", laboratorio=" + laboratorio + "]";
+				+ observacao + ", numRastreamento=" + numRastreamento + "]";
 	}
 
 }

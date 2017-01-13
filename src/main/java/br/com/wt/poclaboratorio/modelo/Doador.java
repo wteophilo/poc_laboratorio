@@ -3,6 +3,8 @@ package br.com.wt.poclaboratorio.modelo;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Doador {
@@ -14,6 +16,9 @@ public class Doador {
 	private String cep;
 	private String endereco;
 	private String complemento;
+	@OneToOne
+	@JoinColumn(name = "bolsaDeSangue_id")
+	private BolsaDeSangue bolsaDeSangue;
 
 	public Long getId() {
 		return id;
@@ -69,6 +74,14 @@ public class Doador {
 
 	public void setComplemento(String complemento) {
 		this.complemento = complemento;
+	}
+	
+	public BolsaDeSangue getBolsaDeSangue() {
+		return bolsaDeSangue;
+	}
+
+	public void setBolsaDeSangue(BolsaDeSangue bolsaDeSangue) {
+		this.bolsaDeSangue = bolsaDeSangue;
 	}
 
 	@Override

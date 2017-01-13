@@ -1,6 +1,9 @@
 package br.com.wt.poclaboratorio.controllers;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 import javax.management.RuntimeErrorException;
 
@@ -19,6 +22,7 @@ import br.com.wt.poclaboratorio.modelo.BolsaDeSangue;
 import br.com.wt.poclaboratorio.modelo.Doador;
 import br.com.wt.poclaboratorio.modelo.Laboratorio;
 import br.com.wt.poclaboratorio.repository.BolsaDeSangueRepository;
+import br.com.wt.poclaboratorio.repository.LaboratorioRepository;
 
 
 @RestController
@@ -27,16 +31,21 @@ public class BolsaDeSangueController {
 	
 	@Autowired
 	private BolsaDeSangueRepository bolsaDeSangueRepository;
+	@Autowired
+	private LaboratorioRepository laboratorioRepository;
+	
+	
 	@RequestMapping(value = "/", method = RequestMethod.POST, produces = "application/json")
 	public ResponseEntity<Void> add(@RequestBody BolsaDeSangue bolsa, UriComponentsBuilder ucBuilder) {
 		HttpHeaders headers = new HttpHeaders();
 		try {
+			bolsa.setDataColeta(geraData());
 			bolsaDeSangueRepository.save(bolsa);
 			headers.setLocation(ucBuilder.path("/{id}").buildAndExpand(bolsa.getId()).toUri());
 			return new ResponseEntity<Void>(headers, HttpStatus.OK);
 		} catch (RuntimeErrorException e) {
 			System.out.println(e.getMessage());
-			return new ResponseEntity<Void>(headers, HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<Void>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
@@ -61,8 +70,9 @@ public class BolsaDeSangueController {
 	}
 	
 	
-	@RequestMapping(value="/listaBolsasPorLaboratorio",method=RequestMethod.GET,produces = "application/json")
-	public ResponseEntity<List<BolsaDeSangue>> listaPorTipoSanguineo(@RequestBody Laboratorio laboratorio) {
+	@RequestMapping(value="/listaBolsasPorLaboratorio/{id}",method=RequestMethod.GET,produces = "application/json")
+	public ResponseEntity<List<BolsaDeSangue>> listaPorTipoSanguineo(@PathVariable Long id) {
+		Laboratorio laboratorio = laboratorioRepository.findByid(id);
 		List<BolsaDeSangue>bolsaDeSangues =(List<BolsaDeSangue>) bolsaDeSangueRepository.findBylaboratorio(laboratorio);
 		if (bolsaDeSangues == null) {
 			return new ResponseEntity<>(bolsaDeSangues, HttpStatus.NOT_FOUND);
@@ -88,7 +98,7 @@ public class BolsaDeSangueController {
 		if (bolsaDeSangue == null) {
 			return new ResponseEntity<>(bolsaDeSangue, HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(bolsaDeSangue, HttpStatus.FOUND);
+		return new ResponseEntity<>(bolsaDeSangue, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/atualizaPorId/{id}", method = RequestMethod.PUT, produces = "application/json")
@@ -119,7 +129,13 @@ public class BolsaDeSangueController {
 		}
 		
 		bolsaDeSangueRepository.delete(bolsaDeSangue);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	private String geraData() {
+		LocalDateTime time =  LocalDateTime.now();
+		DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm").withLocale(new Locale("pt", "br"));;
+		return time.format(formatador).toString();
 	}
 	
 }

@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 public class Laboratorio {
 	@Id
@@ -19,39 +21,13 @@ public class Laboratorio {
 	private String endereco;
 	private String cep;
 	private String email;
+	private String senha;
 	private String cnpj;
-	@OneToMany(mappedBy = "laboratorio", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	private String telefone;
+	@OneToMany(mappedBy = "laboratorio", cascade ={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE }, fetch = FetchType.LAZY)
+	@JsonManagedReference
 	private List<BolsaDeSangue> bolsasDeSangue;
-	@OneToMany(mappedBy = "laboratorio", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	private List<User> users;
 	
-	public Laboratorio() {
-	}
-	
-	public Laboratorio(String nome, String endereco, String cep, String email, String cnpj,List<BolsaDeSangue> bolsasDeSangue) {
-		super();
-		this.nome = nome;
-		this.endereco = endereco;
-		this.cep = cep;
-		this.email = email;
-		this.cnpj = cnpj;
-		this.bolsasDeSangue = bolsasDeSangue;
-	}
-
-
-
-	public Laboratorio(Long id, String nome, String endereco, String cep, String email,String cnpj,
-			List<BolsaDeSangue> bolsasDeSangue) {
-		super();
-		this.id = id;
-		this.nome = nome;
-		this.endereco = endereco;
-		this.cep = cep;
-		this.email = email;
-		this.cnpj = cnpj;
-		this.bolsasDeSangue = bolsasDeSangue;
-	}
-
 	public Long getId() {
 		return id;
 	}
@@ -99,6 +75,14 @@ public class Laboratorio {
 	public void setCnpj(String cnpj) {
 		this.cnpj = cnpj;
 	}
+	
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
 
 	public List<BolsaDeSangue> getBolsasDeSangue() {
 		return bolsasDeSangue;
@@ -107,11 +91,19 @@ public class Laboratorio {
 	public void setBolsasDeSangue(List<BolsaDeSangue> bolsasDeSangue) {
 		this.bolsasDeSangue = bolsasDeSangue;
 	}
+	
+	public String getTelefone() {
+		return telefone;
+	}
+
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
 
 	@Override
 	public String toString() {
 		return "Laboratorio [id=" + id + ", nome=" + nome + ", endereco=" + endereco + ", cep=" + cep + ", email="
-				+ email + ", cnpj=" + cnpj + ", bolsasDeSangue=" + bolsasDeSangue + "]";
+				+ email + ", senha=" + senha + ", cnpj=" + cnpj + ", bolsasDeSangue=" + bolsasDeSangue + "]";
 	}
 
 }
